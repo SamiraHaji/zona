@@ -1,8 +1,15 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { Store } from '../outils/Store';
 
 export default function Layout({ title, children }) {
+  const { state } = useContext(Store);
+  const { cart } = state;
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+  useEffect(() => {
+    setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0));
+  }, [cart.cartItems]);
   return (
     <>
       <Head>
@@ -17,22 +24,29 @@ export default function Layout({ title, children }) {
         {/* justify between pour espacé entre header /main / footer */}
         <header className="">
           <nav className="flex h-12 items-center px-4 justify-between shadow-md">
-            <Link href="/" className="text-lg font-bold">
+            <Link href="/" className="font-bold text-3xl">
               zona
             </Link>
             <div className="">
-              <Link href="/paiement" className="p-2">
-                Paiement
+              <Link href="/cart" className="p-2">
+                Panier
+                {cartItemsCount > 0 && (
+                  <span className="ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white">
+                    {cartItemsCount}
+                  </span>
+                )}
               </Link>
-              <Link href="/connexion" className="p-2">
+              <Link href="/login" className="p-2">
                 Connexion
               </Link>
             </div>
           </nav>
         </header>
         <main className="container m-auto mt-4 px-4">{children}</main>
-        <footer className="flex h-10 justify-center items-center shadow-inner">
-          <p> Copyright © 2022 Zona</p>
+        <footer className="flex h-10 justify-center items-center shadow-inner italic">
+          <p>
+            Copyright © 2022 <span className="font-bold text-2xl">Zona</span>
+          </p>
         </footer>
       </div>
     </>
