@@ -30,7 +30,7 @@ export default function ProductScreen() {
     <Layout title={product.name}>
       <div className="py-2">
         <Link href="/" className="">
-          Retour Aux Produits
+          Retour aux vers les produits
         </Link>
       </div>
       <div className="grid md:grid-cols-4 md:gap-3">
@@ -72,7 +72,7 @@ export default function ProductScreen() {
               className="primary-button w-full"
               onClick={addToCartHandler}
             >
-              Add to cart
+              Ajouter au panier
             </button>
           </div>
         </div>

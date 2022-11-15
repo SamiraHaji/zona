@@ -1,0 +1,528 @@
+/* global TranslatedMessages */
+(function (Shopify) {
+  'use strict';
+  // /* eslint-disable no-unused-vars, comma-dangle, no-var */
+var TranslatedMessages = {
+  /*  */
+  'CHANGE_SERVICE_POINT': {
+    /*  */
+    'de-de': 'Paketshop ändern', /*  */
+    'en-us': 'Change Service Point', /*  */
+    'en-gb': 'Change Service Point', /*  */
+    'es-es': 'Cambiar Punto de Servicio', /*  */
+    'fr-fr': 'Changer de point relais', /*  */
+    'it-it': 'Cambia Service Point', /*  */
+    'nl-nl': 'Verander afhaalpunt', /*  */
+  }, /*  */
+  'CONFIRM_SERVICE_POINT': {
+    /*  */
+    'de-de': 'Paketshop bestätigen', /*  */
+    'en-us': 'Confirm Service Point', /*  */
+    'en-gb': 'Confirm Service Point', /*  */
+    'es-es': 'Confirmar Punto de Servicio', /*  */
+    'fr-fr': 'Valider le point relais', /*  */
+    'it-it': 'Conferma Service Point', /*  */
+    'nl-nl': 'Bevestig afhaalpunt', /*  */
+  }, /*  */
+  'NO_SERVICE_POINT_SELECTED': {
+    /*  */
+    'de-de': 'Kein Paketshop ausgewählt.', /*  */
+    'en-us': 'No service point selected.', /*  */
+    'en-gb': 'No service point selected.', /*  */
+    'es-es': 'No se ha seleccionado ningún punto de servicio.', /*  */
+    'fr-fr': 'Aucun point relais sélectionné', /*  */
+    'it-it': 'Nessun Service Point selezionato.', /*  */
+    'nl-nl': 'Geen afhaalpunt geselecteerd', /*  */
+  }, /*  */
+  'SELECT_SERVICE_POINT': {
+    /*  */
+    'de-de': 'Wählen Sie einen Paketshop', /*  */
+    'en-us': 'Select Service Point', /*  */
+    'en-gb': 'Select Service Point', /*  */
+    'es-es': 'Seleccionar un Punto de Servicio', /*  */
+    'fr-fr': 'Sélectionner un point relais', /*  */
+    'it-it': 'Seleziona Service Point', /*  */
+    'nl-nl': 'Selecteer Afhaalpunt', /*  */
+  }, /*  */
+  'SELECTED_SERVICE_POINT': {
+    /*  */
+    'de-de': 'Der folgende Paketshop wurde ausgewählt:', /*  */
+    'en-us': 'The following service point was selected:', /*  */
+    'en-gb': 'The following service point was selected:', /*  */
+    'es-es': 'Se seleccionó el siguiente punto de servicio:', /*  */
+    'fr-fr': 'Le point relais suivant a été sélectionné :', /*  */
+    'it-it': 'È stato selezionato il seguente Service Point:', /*  */
+    'nl-nl': 'Je hebt het volgende afhaalpunt geselecteerd:', /*  */
+  }, /*  */
+  'SELECTED_SHIPPING_METHOD': {
+    /*  */
+    'de-de': 'Sie haben Paketshopzustellung als Versandmethode ausgewählt. Bitte wählen Sie jetzt den Paketshop aus.', /*  */
+    'en-us': 'You have selected the service point delivery as shipping method, please select now the service point', /*  */
+    'en-gb': 'You have selected the service point delivery as shipping method, please select now the service point', /*  */
+    'es-es': 'Has seleccionado la entrega en el punto de servicio como método de envío, por favor selecciona ahora el punto de servicio', /*  */
+    'fr-fr': 'Vous avez choisi la livraison en point relais. Veuillez sélectionner maintenant un point relais', /*  */
+    'it-it': 'Hai selezionato la consegna al Service Point come metodo di spedizione. Ora seleziona il Service Point', /*  */
+    'nl-nl': 'Je hebt afhaalpunt levering gekozen. Je kunt nu het gewenste afhaalpunt kiezen.', /*  */
+  }, /*  */
+  'SERVICE_POINT_DETAILS': {
+    /*  */
+    'de-de': 'Paketshop Details', /*  */
+    'en-us': 'Service point details', /*  */
+    'en-gb': 'Service point details', /*  */
+    'es-es': 'Detalles del Punto de Servicio', /*  */
+    'fr-fr': 'Détails du point relais', /*  */
+    'it-it': 'Dettagli Service Point', /*  */
+    'nl-nl': 'Informatie geselecteerd afhaalpunt', /*  */
+  }, /*  */
+  'SERVICE_POINT_ERROR': {
+    /*  */
+    'de-de': 'Bitte wählen Sie einen Paketshop aus', /*  */
+    'en-us': 'Please select one Service Point', /*  */
+    'en-gb': 'Please select one Service Point', /*  */
+    'es-es': 'Por favor, elige un Punto de Servicio', /*  */
+    'fr-fr': 'Veuillez sélectionner un point relais', /*  */
+    'it-it': 'Selezionare un Service Point', /*  */
+    'nl-nl': 'Selecteer een afhaalpunt a.u.b.', /*  */
+  }, /*  */
+};
+
+  const DEFAULT_LANGUAGE_CODE = 'en-us';
+  const BASE_DOMAIN = 'https://servicepoints.sendcloud.sc';
+  const SHOW_CSS_TEXT = 'z-index: 2147483646; position: relative;';
+  /** @type {HTMLDivElement | null} */ let loadingDiv = null;
+  /** @type {HTMLDivElement | null} */ let contentBoxDiv = null;
+  /** @type {HTMLIFrameElement | null} */ let servicePointIframe = null;
+  /** @type {ServicePoint | null} */ let selectedServicePoint = null;
+  /** @type {string} */ let postNumber = ''
+  /** @type {string[]} */ const allLocales = [];
+
+  for (const locale in TranslatedMessages.SELECT_SERVICE_POINT) {
+    allLocales.push(locale);
+  }
+
+  const language = normalizeLocale(
+    document.documentElement.getAttribute('lang') || window.navigator.language || DEFAULT_LANGUAGE_CODE
+  );
+
+  /**
+   * Most language identifiers in Shopify use an ISO-2 identifier. There are few exceptions that uses the same format
+   * we do with Unicode BCP 47 locale identifiers. Here we try to ensure that all references to locale identifiers
+   * use the BCP 47 format.
+   *
+   * @param {string} locale
+   * @return {string} locale identifier in the form of {prefix}-{suffix}
+   */
+  function normalizeLocale(locale) {
+    if (locale === undefined) {
+      return DEFAULT_LANGUAGE_CODE;
+    }
+
+    if (allLocales.indexOf(locale) !== -1) {
+      return locale;
+    }
+
+    const localeParts = locale.split('-');
+    let prefix = localeParts[0];
+    let suffix = localeParts[1];
+
+    if (prefix === undefined) {
+      return DEFAULT_LANGUAGE_CODE;
+    }
+
+    prefix = prefix.slice(0, 2).toLowerCase();
+
+    if (suffix !== undefined) {
+      suffix = suffix.slice(0, 2).toUpperCase(); // Safari reports language codes in lowercase (i.e en-gb)
+    }
+
+    const knownSuffixes = allLocales.map(function (locale) {
+      return locale.slice(-2);
+    });
+
+    if (knownSuffixes.indexOf(suffix) === -1) {
+      const defaultPrefix = DEFAULT_LANGUAGE_CODE.slice(0, 2);
+      if (suffix === undefined && prefix === defaultPrefix) {
+        return DEFAULT_LANGUAGE_CODE;
+      }
+
+      const localeFound = allLocales.filter(function (x) {
+        return x.indexOf(prefix) === 0;
+      })[0];
+      return localeFound || DEFAULT_LANGUAGE_CODE;
+    }
+
+    return prefix + '-' + suffix;
+  }
+
+  function init() {
+    const urlPath = window.location.pathname;
+    const orderViewUrl = /.*\/orders\/.*$/;
+    const thankYouUrl = /.*\/checkouts\/.*\/thank_you$/;
+
+    if (urlPath.match(thankYouUrl)) {
+      thanksPage();
+    } else if (urlPath.match(orderViewUrl)) {
+      orderView();
+    }
+  }
+
+  function thanksPage() {
+    registerListeners();
+    if (isServicePointDeliveryShippingMethod()) {
+      addServicePointMessageAndButton();
+    }
+  }
+
+  function orderView() {
+    registerListeners();
+    if (isServicePointDeliveryShippingMethod()) {
+      getSelectedServicePoint();
+    }
+  }
+
+  // Helper functions
+
+  function registerListeners() {
+    window.addEventListener('message', onMessage, false);
+  }
+
+  function isServicePointDeliveryShippingMethod() {
+    if (!Shopify.checkout) {
+      return false;
+    }
+
+    const shippingMethodsNames = new RegExp('(service point delivery|servicepunt levering|paketshop zustellung|paketshopzustellung|livraison en point relais|livraison point relais|service point relais|recogida en punto de servicio|punto de servicio|consegna al punto di servizio|consegna al punto di ritiro|consegna al pick up point|consegna al punto di raccolta|punto di servizio|punto di ritiro|punto di raccolta|pick up point|service points|postpunt|afhaalpunt|servicepunt|servicepoint|service-point|service point|ophalen bij postnl locatie|pickup location - dhl\/postnl pickup location)', 'i');
+
+    try {
+      return Shopify.checkout.shipping_rate.title.match(shippingMethodsNames);
+    } catch (e) {
+      return document.body.innerText.match(shippingMethodsNames);
+    }
+  }
+
+  /**
+   * @param {Record<string, string | number | boolean>} params
+   * @returns {string}
+   */
+  function toQueryString(params) {
+    const plist = [];
+    for (const key in params) {
+      plist.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
+    }
+
+    return plist.join('&');
+  }
+
+  /**
+   * @param {Record<string, string>} message
+   * @param {string} language
+   * @returns {string}
+   */
+  function selectMessageLanguage(message, language) {
+    let msgLanguage = 'en-us';
+    if (language in message) {
+      msgLanguage = language;
+    }
+    return message[msgLanguage];
+  }
+
+  function closeServicePointPicker() {
+    contentBoxDiv.style.cssText = SHOW_CSS_TEXT;
+    removeElement(servicePointIframe);
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
+  }
+
+  function addServicePointMessageAndButton() {
+    const sectionContent = document.querySelector('.section > .section__content');
+    const selectServicePointText = TranslatedMessages.SELECT_SERVICE_POINT;
+    const sppShippingMethodSelectedMsg = TranslatedMessages.SELECTED_SERVICE_POINT;
+    const noServicePointSelectedMsg = TranslatedMessages.NO_SERVICE_POINT_SELECTED;
+
+    const stryle = document.createElement('style');
+    stryle.innerHTML = '.no-scroll {overflow: hidden; height: 100%;}';
+    document.head.appendChild(stryle);
+
+    contentBoxDiv = document.createElement('div');
+    contentBoxDiv.style.cssText = SHOW_CSS_TEXT;
+    contentBoxDiv.classList.add('content-box');
+    contentBoxDiv.innerHTML =
+      '<div class="content-box__row">' +
+      '<h2>' +
+      selectMessageLanguage(noServicePointSelectedMsg, language) +
+      '</h2>' +
+      '</div>' +
+      '<div class="content-box__row content-box__row--no-border">' +
+      '<p>' +
+      selectMessageLanguage(sppShippingMethodSelectedMsg, language) +
+      '</p>' +
+      '</div>' +
+      '<div class="content-box__row">' +
+      '<button id="sendcloud-open-servicepoint" class="btn step__footer__continue-btn">' +
+      selectMessageLanguage(selectServicePointText, language) +
+      '</button>' +
+      '</div>';
+
+    sectionContent.insertBefore(contentBoxDiv, sectionContent.firstChild);
+
+    loadingDiv = document.createElement('div');
+    loadingDiv.style.cssText =
+      'position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 2147483640; background-color: black; opacity: 0.7';
+    document.body.appendChild(loadingDiv);
+    document.getElementById('sendcloud-open-servicepoint').onclick = openServicePoint;
+  }
+
+  /**
+   * @param {Element} element
+   */
+  function removeElement(element) {
+    if (element.remove !== undefined) {
+      element.remove();
+    } else {
+      element && element.parentNode && element.parentNode.removeChild(element);
+    }
+  }
+
+  /**
+   * @param {MessageEvent & ServicePointMessageEvent} event
+   */
+  function onMessage(event) {
+    if (event.origin !== BASE_DOMAIN) {
+      return;
+    }
+
+    const messageHandlers = {
+      servicePointSelected: onSelectedServicePoint,
+      getServicePointSelected: onGetSelectedServicePoint,
+      servicePointClose: onCloseServicePoint
+    };
+
+    const callbackFn = messageHandlers[event.data.type];
+    callbackFn(event);
+  }
+
+  /**
+   * @param {MessageEvent & ServicePointMessageEvent} event
+   */
+  function onSelectedServicePoint(event) {
+    selectedServicePoint = event.data.point;
+    postNumber = event.data.postNumber
+
+    closeServicePointPicker();
+    addServicePointInput();
+  }
+
+  /**
+   * @param {MessageEvent & ServicePointMessageEvent} event
+   */
+  function onGetSelectedServicePoint(event) {
+    selectedServicePoint = event.data.point;
+
+    if (selectedServicePoint) {
+      addServicePointToTable();
+    } else {
+      addServicePointMessageAndButton();
+    }
+  }
+
+  function onCloseServicePoint() {
+    closeServicePointPicker();
+  }
+
+  /**
+   * [address]: https://shopify.dev/api/liquid/objects/address
+   *
+   * @param {Event} evt
+   */
+  function openServicePoint(evt) {
+    evt.preventDefault();
+
+    const params = {
+      'api-key': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjgwNzMzMTYsImlpZCI6MTg5NjAzfQ.mVms5Yqj6yWLiC9rn2RUEeCUz8pzCMPXmayD3Acfikk',
+      country: Shopify.checkout.shipping_address.country_code,
+      'postal-code': Shopify.checkout.shipping_address.zip,
+      city: Shopify.checkout.shipping_address.city || '',
+      'checkout-shippingmethod-name': Shopify.checkout.shipping_rate.title,
+      'checkout-shippingmethod-id': Shopify.checkout.shipping_rate.handle,
+      language: language,
+      'close-button': 1
+    };
+
+    if (selectedServicePoint) {
+      params.id = selectedServicePoint.id;
+    }
+
+    contentBoxDiv.style.cssText = '';
+
+    servicePointIframe = document.createElement('iframe');
+    servicePointIframe.src = BASE_DOMAIN + '/embed/v3/service-point-picker/?' + toQueryString(params);
+    servicePointIframe.id = 'sendcloudshipping_service_point_map';
+    servicePointIframe.style.cssText =
+      'position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: 0; z-index: 2147483647';
+    document.body.appendChild(servicePointIframe);
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
+  }
+
+  function addServicePointInput() {
+    const selectedServicePointText = TranslatedMessages.SELECTED_SERVICE_POINT;
+    const changeServicePointText = TranslatedMessages.CHANGE_SERVICE_POINT;
+    const confirmServicePointText = TranslatedMessages.CONFIRM_SERVICE_POINT;
+
+    contentBoxDiv.innerHTML =
+      '<div class="content-box__row">' +
+      '<h2>' +
+      selectMessageLanguage(selectedServicePointText, language) +
+      '</h2>' +
+      '</div>' +
+      '<div class="content-box__row content-box__row--no-border">' +
+      '<p>' +
+      '<b>' +
+      selectedServicePoint.name +
+      '</b><br>' +
+      selectedServicePoint.street +
+      ' ' +
+      selectedServicePoint.house_number +
+      '<br>' +
+      selectedServicePoint.postal_code +
+      ' ' +
+      selectedServicePoint.city +
+      '</p>' +
+      '</div>' +
+      '<div class="content-box__row">' +
+      '<div class="section__content__column section__content__column--half">' +
+      '<a id="sendcloud-open-servicepoint" style="cursor: pointer;">' +
+      selectMessageLanguage(changeServicePointText, language) +
+      '</a>' +
+      '</div>' +
+      '<div class="section__content__column section__content__column--half">' +
+      '<button id="sendcloud-save-servicepoint" class="btn step__footer__continue-btn">' +
+      selectMessageLanguage(confirmServicePointText, language) +
+      '</button>' +
+      '</div>' +
+      '</div>';
+    document.getElementById('sendcloud-open-servicepoint').onclick = openServicePoint;
+    document.getElementById('sendcloud-save-servicepoint').onclick = sendServicePoint;
+  }
+
+  function sendServicePoint() {
+    const params = {
+      api_key: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjgwNzMzMTYsImlpZCI6MTg5NjAzfQ.mVms5Yqj6yWLiC9rn2RUEeCUz8pzCMPXmayD3Acfikk',
+      order_id: Shopify.checkout.order_id,
+      shop_identification: Shopify.shop,
+      order_confirmation: orderConfirmation(),
+      service_point: selectedServicePoint.id,
+      checkout_shippingmethod_name: Shopify.checkout.shipping_rate.title,
+      checkout_shippingmethod_id: Shopify.checkout.shipping_rate.handle,
+    };
+
+    if (postNumber && postNumber.length) {
+      params['to_post_number'] = postNumber;
+    }
+
+    const url = BASE_DOMAIN + '/service-points/shopify/store/?' + toQueryString(params);
+    const saveSPPIframe = document.createElement('div');
+
+    saveSPPIframe.innerHTML = '<iframe src="' + url + '" width="0" height="0">';
+    document.body.appendChild(saveSPPIframe);
+
+    removeElement(contentBoxDiv);
+    removeElement(loadingDiv);
+    addServicePointToTable();
+  }
+
+  function addServicePointToTable() {
+    const customerInfo = document.querySelector('.content-box:last-child');
+    const firstColumn = customerInfo.querySelector('.section__content__column:first-child');
+
+    firstColumn.innerHTML +=
+      '<h3>' +
+      selectMessageLanguage(TranslatedMessages.SERVICE_POINT_DETAILS, language) +
+      '</h3>' +
+      '<p>' +
+      '<b>' +
+      selectedServicePoint.name +
+      '</b><br>' +
+      selectedServicePoint.street +
+      ' ' +
+      selectedServicePoint.house_number +
+      '<br>' +
+      selectedServicePoint.postal_code +
+      ' ' +
+      selectedServicePoint.city +
+      '</p>';
+  }
+
+  function getSelectedServicePoint() {
+    const params = {
+      api_key: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjgwNzMzMTYsImlpZCI6MTg5NjAzfQ.mVms5Yqj6yWLiC9rn2RUEeCUz8pzCMPXmayD3Acfikk',
+      order_id: Shopify.checkout.order_id,
+      shop_identification: Shopify.shop,
+      order_confirmation: orderConfirmation()
+    };
+    const url = BASE_DOMAIN + '/service-points/shopify/selected/?' + toQueryString(params);
+    const getSPPIframe = document.createElement('div');
+
+    getSPPIframe.innerHTML = '<iframe src="' + url + '" width="0" height="0">';
+    document.body.appendChild(getSPPIframe);
+  }
+
+  function orderConfirmation() {
+    if (!Shopify.checkout) {
+      return '';
+    }
+
+    return (
+      Shopify.checkout.shipping_address.first_name +
+      ' ' +
+      Shopify.checkout.shipping_address.last_name +
+      '+' +
+      Shopify.checkout.shipping_address.zip
+    );
+  }
+
+  init();
+})(Shopify);
+
+/**
+ * @typedef {object} ServicePoint A service point object.
+ * @property {string} carrier
+ * @property {string} city
+ * @property {string} code
+ * @property {string} country
+ * @property {number | undefined} distance
+ * @property {string} email
+ * @property {ServicePointExtraData} extra_data
+ * @property {string} [formattedDistance]
+ * @property {Record<string, string[]>} formatted_opening_times
+ * @property {string} homepage
+ * @property {string} house_number
+ * @property {number} id
+ * @property {boolean} is_active
+ * @property {string} latitude
+ * @property {string} longitude
+ * @property {string} name
+ * @property {boolean} open_tomorrow
+ * @property {boolean} open_upcoming_week
+ * @property {string} phone
+ * @property {string} postal_code
+ * @property {string | null} shop_type
+ * @property {string} street
+ */
+
+/**
+ * @typedef {object} ServicePointExtraData
+ * @property {string} shop_type
+ */
+
+/**
+ * @typedef {object} ServicePointMessageEvent
+ * @property {ServicePointMessageData} data
+ */
+
+/**
+ * @typedef {object} ServicePointMessageData
+ * @property {'servicePointSelected' | 'servicePointClose' | 'getServicePointSelected'} type the type of the message event. Always present.
+ * @property {ServicePoint} [point] the selected service point. Always present if type is `'servicePointSelected'`.
+ * @property {string} [postNumber] the entered post number. May be present if type is `'servicePointSelected'`.
+ */

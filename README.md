@@ -13,20 +13,16 @@
    4. Ajouter 'footer'
    5. Ajouter 'classes tailwind css'
 6. Liste des Produits
-
    1. Ajouter data.js
    2. Ajouter images
    3. "render" produits
-
 7. Créer les produits détailés
-
    1. Créer la page produit
    2. Créer 3 colonnes
    3. Afficher l'image dans la 1èr colonne
    4. Afficher le détail des produits dans la 2ème colonne
    5. Afficher l'ajout au panier dans la 3ème colonne
    6. Ajouter la catégorie du produit
-
 8. Poignée Ajouter au panier
    1. Définir React 'useContext'
    2. Définir l'état des articles du panier
@@ -45,3 +41,7 @@
 11. Enregistrer le panier
     1. installer js-cookies package
     2. Enregistrer et récupérer les éléments du panier dans les cookies
+12. Créer le formulaire de connexion
+    1. installer 'React Hook' formulaire
+    2. Créer des champs de saisie
+    3. Ajouter le bouton Connexion
