@@ -45,3 +45,9 @@
     1. installer 'React Hook' formulaire
     2. Créer des champs de saisie
     3. Ajouter le bouton Connexion
+13. Se connecter à MongoDB
+    1. installer mongoose
+    2. Installer MongoDB ou utiliser MongoDB Atlas
+    3. Enregistrer l'url de connexion dans le fichier .env
+    4. Créer la base de données Outils
+    5. Créer des exemples d'utilisateurs
