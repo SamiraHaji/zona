@@ -56,3 +56,7 @@
     2. Créer nextauth.js
     3. Implémenter la connexion
     4. Utiliser la connexion dans le formulaire de connexion
+15. Ajouter un menu utilisateur
+    1. Vérifier l'authentification de l'utilisateur
+    2. Installer "HeadlessUi"
+    3. Afficher le menu utilisateur

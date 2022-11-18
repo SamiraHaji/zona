@@ -10,7 +10,7 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-a {
+Link {
   color: inherit;
   text-decoration: none;
 }
@@ -29,4 +29,7 @@ input,
 select,
 textarea {
   @apply rounded border p-2 outline-none ring-purple-200 hover:ring-pink-500 focus:ring;
+}
+.dropdown-link {
+  @apply flex p-2 hover:bg-gray-200;
 }
