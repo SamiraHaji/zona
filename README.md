@@ -51,3 +51,8 @@
     3. Enregistrer l'url de connexion dans le fichier .env
     4. Créer la base de données Outils
     5. Créer des exemples d'utilisateurs
+14. Créer API Connexion
+    1. Installer next-auth
+    2. Créer nextauth.js
+    3. Implémenter la connexion
+    4. Utiliser la connexion dans le formulaire de connexion
