@@ -40,7 +40,7 @@ export default function PaymentScreen() {
     <Layout title="Mode de paiement ">
       <CheckoutWizard activeStep={2} />
       <form className="mx-auto max-w-screen-md" onSubmit={submitHandler}>
-        <h1 className="mb-4 texl-xl">Mode de paiement</h1>
+        <h1 className="mb-4 texl-xl font-bold">Mode de paiement</h1>
         {['PayPal', 'Carte Bleue', 'PayerAprèsLaLivraison'].map((payment) => (
           <div key={payment} className="mb-4">
             <input

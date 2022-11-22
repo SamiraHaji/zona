@@ -34,6 +34,3 @@ textarea {
 #link {
   @apply text-blue-600 hover:text-blue-800;
 }
-#h1 {
-  @apply font-bold;
-}

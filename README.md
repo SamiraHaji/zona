@@ -66,3 +66,7 @@
 17. Créer un écran de mode de paiement
     1. Afficher les modes de paiement
     2. Enregistrer le mode de paiement dans son contexte
+18. Produits d'échantillons de semences
+    1. Insérer des exemples de produits dans mongodb
+    2. Charger des produits à partir de la base de données dans l'écran d'accueil et de produit
+    3. Vérifier le nombre de produits en stock dans ajouter au panier
