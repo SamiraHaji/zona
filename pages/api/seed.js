@@ -1,6 +1,6 @@
 import User from '../../models/user';
-import data from '../../outils/data';
-import db from '../../outils/db';
+import data from '../../utils/data';
+import db from '../../utils/db';
 
 const Handler = async (req, res) => {
   await db.connect();

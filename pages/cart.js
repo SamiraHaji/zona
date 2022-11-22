@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useContext } from 'react';
 import Layout from '../components/Layout';
-import { Store } from '../outils/Store';
+import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
@@ -25,7 +25,11 @@ function CartScreen() {
       <h1 className="mb-4 text-xl font-bold">Panier</h1>
       {cartItems.length === 0 ? (
         <div>
-          Votre Panier est vide. <Link href="/"> Aller faire vos achats</Link>
+          Votre Panier est vide.{' '}
+          <Link id="link" href="/">
+            {' '}
+            Aller faire vos achats
+          </Link>
         </div>
       ) : (
         <div className="grid md:grid-cols-4 md:gap-5">
@@ -44,6 +48,7 @@ function CartScreen() {
                   <tr key={item.slug} className="border-b">
                     <td>
                       <Link
+                        id="link"
                         href={`/product/${item.slug}`}
                         className="flex items-center"
                       >

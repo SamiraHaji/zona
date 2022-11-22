@@ -10,11 +10,6 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-Link {
-  color: inherit;
-  text-decoration: none;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -23,7 +18,10 @@ Link {
   @apply mb-5 block rounded-lg border border-gray-200 shadow-md;
 }
 .primary-button {
-  @apply rounded py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500  hover:from-pink-500 hover:to-amber-300;
+  @apply rounded py-2 px-4 shadow outline-none bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-amber-300;
+}
+.default-button {
+  @apply rounded py-2 px-4 text-black shadow outline-none bg-gradient-to-r from-amber-300 to-pink-500 hover:from-purple-500 hover:to-pink-500;
 }
 input,
 select,
@@ -32,4 +30,10 @@ textarea {
 }
 .dropdown-link {
   @apply flex p-2 hover:bg-gray-200;
+}
+#link {
+  @apply text-blue-600 hover:text-blue-800;
+}
+#h1 {
+  @apply font-bold;
 }

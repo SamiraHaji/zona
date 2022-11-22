@@ -60,3 +60,9 @@
     1. Vérifier l'authentification de l'utilisateur
     2. Installer "HeadlessUi"
     3. Afficher le menu utilisateur
+16. Créer un écran d'expédition
+    1. Afficher les champs d'adresse
+    2. Enregistrer l'adresse dans son contexte
+17. Créer un écran de mode de paiement
+    1. Afficher les modes de paiement
+    2. Enregistrer le mode de paiement dans son contexte

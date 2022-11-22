@@ -1,6 +1,6 @@
 import Layout from '../components/Layout';
 import ProductItem from '../components/productItem';
-import data from '../outils/data';
+import data from '../utils/data';
 
 export default function Accueil() {
   return (

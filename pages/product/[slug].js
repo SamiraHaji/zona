@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import Layout from '../../components/Layout';
-import data from '../../outils/data';
-import { Store } from '../../outils/Store';
+import data from '../../utils/data';
+import { Store } from '../../utils/Store';
 
 export default function ProductScreen() {
   const { state, dispatch } = useContext(Store);

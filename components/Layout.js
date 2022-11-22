@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { Menu } from '@headlessui/react';
 import 'react-toastify/dist/ReactToastify.css';
-import { Store } from '../outils/Store';
+import { Store } from '../utils/Store';
 import DropdownLink from './DropdownLink';
 import Cookies from 'js-cookie';
 
@@ -40,11 +40,11 @@ export default function Layout({ title, children }) {
         {/* justify between pour espacé entre header /main / footer */}
         <header className="">
           <nav className="flex h-12 items-center px-4 justify-between shadow-md">
-            <Link href="/" className="font-bold text-3xl">
+            <Link id="link" href="/" className="font-bold text-3xl">
               zona
             </Link>
             <div className="">
-              <Link href="/cart" className="p-2">
+              <Link id="link" href="/cart" className="p-2">
                 Panier
                 {cartItemsCount > 0 && (
                   <span className="ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white">
@@ -57,7 +57,7 @@ export default function Layout({ title, children }) {
                 'Chargement en cours'
               ) : session?.user ? (
                 <Menu as="div" className="relative inline-block">
-                  <Menu.Button className="text-[#ba0797]">
+                  <Menu.Button className="text-[#2a15c4]">
                     {session.user.name}
                   </Menu.Button>
                   <Menu.Items className="absolute right-0 w-56 origin-top-right bg-white shadow-lg">
@@ -86,7 +86,7 @@ export default function Layout({ title, children }) {
                   </Menu.Items>
                 </Menu>
               ) : (
-                <Link href="/login" className="p-2">
+                <Link id="link" href="/login" className="p-2">
                   Connexion
                 </Link>
               )}

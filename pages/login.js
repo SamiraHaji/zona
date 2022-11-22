@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import Layout from '../components/Layout';
 import { useForm } from 'react-hook-form';
-import { getError } from '../outils/error';
+import { getError } from '../utils/error';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 
@@ -91,6 +91,7 @@ export default function LoginScreen() {
         <div className="mb-4">
           Vous n&apos;aviez pas de compte ? &nbsp;
           <Link
+            id="link"
             href={`/register?redirect=${redirect || '/'}`}
             className="italic font-semibold hover:text-gray-400"
           >
