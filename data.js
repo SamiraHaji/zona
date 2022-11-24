@@ -21,11 +21,11 @@ const data = {
       slug: 'rose-rose',
       category: 'fleur',
       image: '/images/rose rose.png',
-      price: 2.5,
+      price: 4,
       brand: 'Rose',
       rating: 4.5,
       numReviews: 59,
-      countInStock: 25,
+      countInStock: 100,
       description: ' cette rose est très populaire auprès des amoureux',
     },
     {

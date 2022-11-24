@@ -70,3 +70,7 @@
     1. Insérer des exemples de produits dans mongodb
     2. Charger des produits à partir de la base de données dans l'écran d'accueil et de produit
     3. Vérifier le nombre de produits en stock dans ajouter au panier
+19. Charger les produits mongodb
+    1. Charger les produits dans la page d'accueil de mongodb
+    2. Charger les produits dans la page produit de mongodb
+    3. Utiliser l'API du produit pour vérifier le nombre en stock dans l'ajout au panier

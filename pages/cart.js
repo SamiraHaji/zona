@@ -6,6 +6,8 @@ import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function CartScreen() {
   const router = useRouter();
@@ -16,9 +18,14 @@ function CartScreen() {
   const removeItemHandler = (item) => {
     dispatch({ type: 'CART_REMOVE_ITEM', payload: item });
   };
-  const updateCartHandler = (item, qty) => {
+  const updateCartHandler = async (item, qty) => {
     const quantity = Number(qty);
+    const { data } = await axios.get(`/api/products/${item._id}`);
+    if (data.countInStock < quantity) {
+      toast.error("Cet article n'est plus disponible!!");
+    }
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } });
+    toast.success('Mise à jour du produit sur votre panier');
   };
   return (
     <Layout title="Panier">
