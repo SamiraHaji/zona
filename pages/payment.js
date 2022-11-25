@@ -62,11 +62,12 @@ export default function PaymentScreen() {
             type="button"
             className="default-button"
           >
-            Back
+            Précédent
           </button>
-          <button className="primary-button">Next</button>
+          <button className="primary-button">Suivant</button>
         </div>
       </form>
     </Layout>
   );
 }
+PaymentScreen.auth = true;

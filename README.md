@@ -74,3 +74,7 @@
     1. Charger les produits dans la page d'accueil de mongodb
     2. Charger les produits dans la page produit de mongodb
     3. Utiliser l'API du produit pour vérifier le nombre en stock dans l'ajout au panier
+20. Créer un écran de commande
+    1. Afficher l'expédition
+    2. Afficher le mode de paiement
+    3. Mettre en œuvre la commande de création
